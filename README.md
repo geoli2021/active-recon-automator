@@ -60,24 +60,36 @@ A ferramenta é executada via linha de comandos (recon.py) aceitando os seguinte
 # 💻 Comandos de Instalação e Execução
 
 # 1. Clonar o repositório
+```bash
 git clone https://github.com/SEU_USUARIO/recon-pulse.git
 cd recon-pulse
+```
 
 # 2. Criar e ativar o ambiente virtual
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
 # 3. Instalar dependências
+```bash
 pip install -r requirements.txt
+```
 
 # 4. Exemplo - Quick Scan
+```bash
 sudo ./venv/bin/python recon.py -t 192.168.1.1 -p quick
+```
 
 # 5. Exemplo - Full Scan com consulta ao Exploit-DB
+```bash
 sudo ./venv/bin/python recon.py -t 10.0.2.3 -p full --cve -o all
+```
 
 # 6. Exemplo - Stealth Scan (Evasão)
+```bash
 sudo ./venv/bin/python recon.py -t 10.0.2.3 -p stealth
+```
 
 ---
 
