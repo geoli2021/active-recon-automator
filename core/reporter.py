@@ -31,7 +31,7 @@ class Reporter:
             
             md_content += "\n### Portas Abertas e Serviços\n\n"
             md_content += "| Porta | Protocolo | Serviço | Versão |\n"
-            md_content += "|---|---|---|---|\n"
+            md_content += "|---|---|---|---|\n"  # Adicionados os separadores das colunas Serviço e Versão
             
             for p in host['ports']:
                 version_str = f"{p['product']} {p['version']}".strip() or "N/A"
