@@ -12,8 +12,8 @@ class Reporter:
     def export_json(self, filename=None):
         filename = filename or f"recon_scan_{self.timestamp}.json"
         filepath = os.path.join(self.output_dir, filename)
-        with open(filepath, "w") as f:
-            json.dump(self.data, f, indent=4)
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(self.data, f, indent=4, ensure_ascii=False)
         return filepath
 
     def export_markdown(self, filename=None):
@@ -24,21 +24,26 @@ class Reporter:
         md_content += f"**Data:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
         for host in self.data:
-            md_content += f"## Target: {host['ip']} ({host['hostname']})\n"
+            hostname_str = f" ({host['hostname']})" if host.get('hostname') else ""
+            md_content += f"## Target: {host['ip']}{hostname_str}\n"
             md_content += f"- **Status:** {host['status']}\n"
-            if host['os']:
+            if host.get('os'):
                 md_content += f"- **S.O. Detectado:** {', '.join(host['os'])}\n"
             
             md_content += "\n### Portas Abertas e Serviços\n\n"
+            
+            # Cabeçalho formatado com separadores para as 4 colunas
             md_content += "| Porta | Protocolo | Serviço | Versão |\n"
-            md_content += "|---|---|---|---|\n"  # Adicionados os separadores das colunas Serviço e Versão
+            md_content += "|---|---|---|---|\n"
             
             for p in host['ports']:
-                version_str = f"{p['product']} {p['version']}".strip() or "N/A"
+                product = p.get('product', '')
+                version = p.get('version', '')
+                version_str = f"{product} {version}".strip() or "N/A"
                 md_content += f"| {p['port']} | {p['protocol']} | {p['service']} | {version_str} |\n"
                 
             md_content += "\n"
             
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(md_content)
         return filepath
