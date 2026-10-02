@@ -1,0 +1,6 @@
+{
+  "quick": "-sS -F --open",
+  "full": "-sS -sV -sC -O -p- --open",
+  "vuln": "-sV --script=vuln",
+  "stealth": "-sS -Pn -f -g 53 --data-length 16 -T2 --randomize-hosts --open"
+}
