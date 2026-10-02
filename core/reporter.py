@@ -31,17 +31,31 @@ class Reporter:
                 md_content += f"- **S.O. Detectado:** {', '.join(host['os'])}\n"
             
             md_content += "\n### Portas Abertas e Serviços\n\n"
-            
-            # Cabeçalho formatado com separadores para as 4 colunas
-            md_content += "| Porta | Protocolo | Serviço | Versão |\n"
-            md_content += "|---|---|---|---|\n"
+            md_content += "| Porta | Protocolo | Serviço | Versão | Exploits Encontrados |\n"
+            md_content += "|---|---|---|---|---|\n"
             
             for p in host['ports']:
                 product = p.get('product', '')
                 version = p.get('version', '')
                 version_str = f"{product} {version}".strip() or "N/A"
-                md_content += f"| {p['port']} | {p['protocol']} | {p['service']} | {version_str} |\n"
                 
+                # Contagem de exploits correlacionados
+                exploits = p.get('known_exploits', [])
+                exploit_str = f"{len(exploits)} exploit(s)" if exploits else "Nenhum"
+                
+                md_content += f"| {p['port']} | {p['protocol']} | {p['service']} | {version_str} | {exploit_str} |\n"
+                
+            # Seção detalhada de Exploits se houver achados
+            has_exploits = any(p.get('known_exploits') for p in host['ports'])
+            if has_exploits:
+                md_content += "\n### ⚠️ Correlação de Vulnerabilidades (Exploit-DB)\n\n"
+                for p in host['ports']:
+                    if p.get('known_exploits'):
+                        md_content += f"#### Porta {p['port']}/{p['protocol']} - {p['service']} ({p.get('product', '')} {p.get('version', '')})\n"
+                        for exp in p['known_exploits']:
+                            md_content += f"- **[{exp['edb_id']}]** {exp['title']} *({exp['platform']} / {exp['type']})*\n"
+                        md_content += "\n"
+                        
             md_content += "\n"
             
         with open(filepath, "w", encoding="utf-8") as f:
